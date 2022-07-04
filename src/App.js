@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import SingleCard from './components/SingleCard';
 
@@ -15,7 +15,7 @@ const cardImages = [
 function App() {
   const [cards, setCards] = useState([])
   const [turns, setTurns] = useState(0)
-  const [choiceOnce, setChoiceOne] = useState(null)
+  const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
 
   // Shuffle the cards (we need two of each card)
@@ -33,13 +33,33 @@ function App() {
     // If choiceOne is not null then choiceTwo is the clicked on card
     // Else choiceOne is the clicked on card
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card)
+    // Cant compare cards here as the line above is scheduled
+  }
+
+  // Compare the two selected cards
+  useEffect(() => {
+    if (choiceOne && choiceTwo){
+      if (choiceOne.src === choiceTwo.src){
+        console.log('those cards match')
+        resetTurn()
+      }else{
+        console.log('those cards do not match')
+        resetTurn()
+      }
+    }
+  },[choiceOne, choiceTwo])
+
+  // Reset the choices and increase the turn counter
+  const resetTurn = () => {
+    setChoiceOne(null)
+    setChoiceTwo(null)
+    setTurns(prevTurns => prevTurns + 1)
   }
 
   return (
     <div className="App">
       <h1>Magic Match</h1>
       <button onClick={shuffleCards}>New Game</button>
-
       <div className="card-grid">
         {cards.map(card => (
           <SingleCard 
