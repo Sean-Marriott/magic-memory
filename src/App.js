@@ -71,7 +71,7 @@ function App() {
   // Start a new game automatically
   useEffect(() => {
     shuffleCards()
-  })
+  }, [])
 
   return (
     <div className="App">
